@@ -39,11 +39,11 @@ export default function SignInForm() {
         <h1 className="mb-2 font-semibold text-gray-800">Sign In</h1>
 
         <div className="grid grid-cols-2 gap-3">
-          <button type="button" onClick={() => signIn("google")}>
+          <button type="button" onClick={() => signIn("google", { callbackUrl: "/" })}>
             Sign in with Google
           </button>
 
-          <button type="button" onClick={() => signIn("github")}>
+          <button type="button" onClick={() => signIn("github", { callbackUrl: "/" })}>
             Sign in with GitHub
           </button>
         </div>
