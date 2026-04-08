@@ -69,7 +69,7 @@ export default function SignInForm() {
         </form>
 
         <p className="text-sm mt-4">
-          Don&apos;t have an account? <Link href="/signup">Sign Up</Link>
+          When you sign out of the app, your Google account may remain active in the browser.
         </p>
       </div>
     </div>

@@ -8,11 +8,21 @@ export const authConfig: NextAuthConfig = {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+        prompt: "select_account",
+        },
+      },
     }),
 
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      // authorization: {
+      //   params: {
+      //   prompt: "login",
+      //   },
+      // }
     }),
 
     Credentials({
