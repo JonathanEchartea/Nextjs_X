@@ -1,41 +1,65 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GithubProvider from "next-auth/providers/github";
-import { z } from 'zod';
+import type { NextAuthConfig } from "next-auth"
+import GitHub from "next-auth/providers/github"
+import Google from "next-auth/providers/google"
+import Credentials from "next-auth/providers/credentials"
 
-export const authOptions: NextAuthOptions = {
-    pages: {
-        signIn: '/auth/login',
-        newUser: '/auth/new-account',
+export const authConfig: NextAuthConfig = {
+  providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
+
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (
+          credentials?.email === "admin@test.com" &&
+          credentials?.password === "123456"
+        ) {
+          return {
+            id: "1",
+            name: "Admin",
+            email: "admin@test.com",
+            role: "admin",
+          }
+        }
+
+        return null
+      },
+    }),
+  ],
+
+  pages: {
+    signIn: "/signin",
+  },
+
+  session: {
+    strategy: "jwt",
+  },
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as any).role
+      }
+      return token
     },
 
-    providers: [
-        GithubProvider({
-            clientId: process.env.GITHUB_ID!,
-            clientSecret: process.env.GITHUB_SECRET!,
-        }),
-
-        CredentialsProvider({
-            name: "Credentials",
-            credentials: {
-                email: { label: "Username", type: "text", placeholder: "jsmith" },
-                password: { label: "Password", type: "password" }
-            },
-            async authorize(credentials) {
-                const parsedCredentials = z
-                    .object({ email: z.string().email(), password: z.string().min(6) })
-                    .safeParse(credentials);
-                const { email, password } = parsedCredentials.data ? parsedCredentials.data : { email: '', password: '' };
-                const user = { id: "1", name: "John Smith", email: "john@example.com" };
-                if (email === user.email && password === "password") {
-                    return user;
-                }
-                return null;
-            }
-        }),
-    ],
-};
-
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+    async session({ session, token }) {
+      if (session.user) {
+        (session.user as any).role = token.role
+      }
+      return session
+    },
+  },
+}
