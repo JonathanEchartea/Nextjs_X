@@ -15,7 +15,7 @@ export default async function NewPostPage({
     <main className="p-6 space-y-4">
       <TopBar />
 
-      <h1 className="text-xl font-bold">New Post</h1>
+      <h1 className="text-xl font-bold">Nuevo Post</h1>
 
       <form action={createPost} className="space-y-1">
         <input
