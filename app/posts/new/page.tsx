@@ -6,9 +6,7 @@ export default async function NewPostPage({
 }: {
   searchParams?: Promise<{ error?: string }>;
 }) {
-  const resolvedSearchParams = searchParams
-    ? await searchParams
-    : undefined;
+  const resolvedSearchParams = searchParams ? await searchParams: undefined;
 
   const showTitleError =
     resolvedSearchParams?.error === "title";
